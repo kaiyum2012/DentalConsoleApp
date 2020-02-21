@@ -18,7 +18,7 @@ namespace DentalConsoleApp
             base.LastName = person.LastName;
             base.Gender = person.Gender;
             base.BirthDate = person.BirthDate;
-            base.PhoneNumber = person.PhoneNumber;
+            base.PatientNumber = person.PatientNumber;
         }
 
         public override void Fittings()

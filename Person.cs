@@ -15,7 +15,7 @@ namespace DentalConsoleApp
         private string lastName;
         private Gender gender;
         private DateTime birthDate;
-        private long phoneNumber;
+        private string patientNumber;
 
         public string FirstName { get => firstName; set => firstName = value; }
         public string LastName { get => lastName; set => lastName = value; }
@@ -25,7 +25,17 @@ namespace DentalConsoleApp
             set => birthDate = value; 
         }
        
-        public long PhoneNumber { get => phoneNumber; set => phoneNumber = value; }
+        public string PatientNumber 
+        {
+            get {
+                int mask = 3;
+                string maskStr = new string('X',mask );
+                string unMask = patientNumber.Substring(mask, patientNumber.Length - mask);
+                return maskStr + unMask;
+            }
+
+            set { patientNumber = value; }
+        }
         /// <summary>
         /// Age (Computed property)
         /// </summary>
@@ -48,23 +58,23 @@ namespace DentalConsoleApp
         /// <param name="lastName"></param>
         /// <param name="gender"></param>
         /// <param name="birthDate"> Datetime Object (YYYY-MM-DD)</param>
-        /// <param name="phoneNumber"> Phone Number (10 digits)</param>
-        public Person(string firstName,string lastName,Gender gender,DateTime birthDate,long phoneNumber)
+        /// <param name="patientNumber"> Phone Number (10 digits)</param>
+        public Person(string firstName,string lastName,Gender gender,DateTime birthDate,string patientNumber)
         {
             FirstName = firstName;
             LastName = lastName;
             Gender = gender;
             BirthDate = birthDate;
-            PhoneNumber = phoneNumber;
+            PatientNumber = patientNumber;
 
         }
         // TODO:: Replace AGE with computed property 
         public override string ToString()
         {
             return
-                FirstName + "," + LastName + " ("+ Age +" years)\n" +
+                FirstName + "," + LastName + " ("+ Age +" years) - " +
                 Gender + "\n" +
-                "Phone :" + PhoneNumber + "\n" +
+                "Patient Number :" + PatientNumber + "\n" +
                 "Birthday (MM/DD/YYYY) :" + GetBirthDateShortString() ;
         }
 

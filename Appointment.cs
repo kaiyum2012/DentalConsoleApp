@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace DentalConsoleApp
 {
     public enum TimeSlot{
-        _08AM_09AM_ = 1,
-        _09AM_10AM_,
-        _10AM_11AM_,
-        _11AM_12AM_,
-        _12AM_01PM_,
-        _01PM_02PM_,
-        _02PM_03PM_,
-        _03PM_04PM_
+         NONE = 0,
+        _08AM_TO_09AM_ = 1,
+        _09AM_TO_10AM_,
+        _10AM_TO_11AM_,
+        _11AM_TO_12AM_,
+        _12AM_TO_01PM_,
+        _01PM_TO_02PM_,
+        _02PM_TO_03PM_,
+        _03PM_TO_04PM_
     }
 
-    
-    class Appointment
+    class Appointment : IComparable<Appointment>
     {
         public TimeSlot AppointmentTimeSlot;
-        private DateTime appointmentDate;
+      
         public delegate void ProcessAppointmentDelegate();
         public ProcessAppointmentDelegate ProcessAppointment;
 
-
+        private DateTime appointmentDate;
         private Person patient;
-
 
         public DateTime AppointmentDay
         {
@@ -36,6 +36,10 @@ namespace DentalConsoleApp
             }
         }
 
+        public Person Patient
+        {
+            get { return patient; }
+        }
         public Appointment(){ }
 
         /// <summary>
@@ -46,17 +50,27 @@ namespace DentalConsoleApp
         public Appointment(Person person, TimeSlot slot)
         {
             patient = person;
-            AppointmentTimeSlot = slot;
-
-            ProcessAppointment += patient.CheckUp;
-            ProcessAppointment += patient.Cleaning;
-            ProcessAppointment += patient.CavityFill;
-            ProcessAppointment += patient.Fittings;
-            ProcessAppointment += patient.XRay;    
+            AppointmentTimeSlot = slot; 
         }
 
+        public override string ToString()
+        {
+            return "[ " + this.AppointmentTimeSlot.ToString() +" ]\n" 
+                + this.patient.ToString(); //+ "(" + this.patient.PatientNumber + ")";
+        }
 
+        public int CompareTo([AllowNull] Appointment other)
+        {
+            if (other == null)
+                return 0;
 
+            if(this.patient.PatientNumber == other.patient.PatientNumber &&
+                this.AppointmentTimeSlot == other.AppointmentTimeSlot)
+            {
+                return 1;
+            }
 
+            return 0;
+        }
     }
 }
