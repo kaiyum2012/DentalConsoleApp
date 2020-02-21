@@ -6,8 +6,13 @@ namespace DentalConsoleApp
 {
     class Adult : Person
     {
-        public Adult() { }
 
+        private Adult() { }
+
+        /// <summary>
+        /// Adult is of Type Person
+        /// </summary>
+        /// <param name="person"></param>
         public Adult(Person person)
         {
             base.FirstName = person.FirstName;
@@ -17,9 +22,11 @@ namespace DentalConsoleApp
             base.PatientNumber = person.PatientNumber;
         }
 
+        #region overrride methods
         public override void Fittings()
         {
             Console.WriteLine("dentures fitted");
         }
+        #endregion
     }
 }

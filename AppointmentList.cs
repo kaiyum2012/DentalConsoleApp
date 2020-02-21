@@ -6,8 +6,8 @@ namespace DentalConsoleApp
 {
     class AppointmentList
     {
-        private List<Appointment> appointments;
-        //private List<TimeSlot> appointmentSlots = new List<TimeSlot>();
+        private readonly List<Appointment> appointments;
+
         public AppointmentList()
         {
             appointments = new List<Appointment>();
@@ -15,6 +15,8 @@ namespace DentalConsoleApp
 
 
         #region PUBLIC API
+       
+        #region Indexer API
         public int Count
         {
             get { return appointments.Count; }
@@ -30,19 +32,19 @@ namespace DentalConsoleApp
         {
             return appointments.ToArray();
         }
+        #endregion
 
         public void AddAppointment(Appointment appointment)
         {
-
             appointments.Add(appointment);
-            //appointmentSlots.Add(appointment.AppointmentTimeSlot);
 
-            Console.WriteLine("\n\n{0}({1}) is Added Successfully with time {2}", appointment.Patient.FirstName, appointment.Patient.PatientNumber, appointment.AppointmentTimeSlot);
+            Console.WriteLine("\n\n{0}({1}) is Added Successfully with time slot [ {2} ]", appointment.Patient.FirstName, appointment.Patient.PatientNumber, EnumHelper.GetAttributeDescription(appointment.AppointmentTimeSlot));
         }
-        //TODO:: Remove apppoint from appointments
+
+        //DONE:: Remove apppointment from appointments
         public void CancleAppointment(Appointment appointment)
         {
-
+            appointments.Remove(appointment);
         }
         #endregion
     }

@@ -9,11 +9,11 @@ namespace DentalConsoleApp
     class DentalClinic
     {
 
-        private AppointmentList appointments;
-        private PatientList patientList;
+        private readonly AppointmentList appointments;
+        private readonly PatientList patientList;
         public string ClinicName;
 
-        public DentalClinic()
+        private DentalClinic()
         {
 
         }
@@ -39,9 +39,10 @@ namespace DentalConsoleApp
             }
         }
 
-        // TODO :: prevent from adding same service twice
+        // TODO :: prevent from adding same service twice [Not neccesary for assignment]
         private void AskServicesAndAssign(Appointment appointment)
         {
+       
             var services = GetDentalServiceList();
             DentalServicesEnum service;
 
@@ -111,13 +112,12 @@ namespace DentalConsoleApp
                     if (isAdded)
                     {
                         isAdded = false;
-                        Console.WriteLine("\n\n" + GetServiceDescription(service) +
+                        Console.WriteLine("\n\n" + EnumHelper.GetAttributeDescription(service) +
                         "  service added. \n\n");
                     }
                 }
                 catch (Exception)
                 {
-
                     Console.WriteLine("Service is not available");
                 }
 
@@ -152,9 +152,11 @@ namespace DentalConsoleApp
         public TimeSlot[] GetAvailableTimeSlots()
         {
             List<TimeSlot> availableTimeSlots = new List<TimeSlot>();
+            var slots = EnumHelper.ToArray<TimeSlot>();
 
-            foreach (TimeSlot slot in Enum.GetValues(typeof(TimeSlot)))
-            {
+            //foreach (TimeSlot slot in Enum.GetValues(typeof(TimeSlot)))
+            foreach (TimeSlot slot in slots)
+                {
 
                 if (CheckAvailability(slot))
                 {
@@ -182,7 +184,7 @@ namespace DentalConsoleApp
             {
                 for (int i = 0; i < appointments.Count; i++)
                 {
-                    Console.WriteLine(appointments[i].ToString());
+                    Console.WriteLine("[" + (i+1) + "] " + appointments[i].ToString());
                 }
             }
 
@@ -210,7 +212,7 @@ namespace DentalConsoleApp
 
         public void PerformSchedule(Appointment appointment)
         {
-            appointment.ProcessAppointment();
+            appointment.ProcessAppointment?.Invoke(); 
         }
 
         public void DisplayAndPerformSchedule()
@@ -224,8 +226,12 @@ namespace DentalConsoleApp
                 for (int i = 0; i < appointments.Count; i++)
                 {
                     DisplayAppointment(appointments[i]);
-                    PerformSchedule(appointments[i]);
+                    
                     Console.WriteLine("-------------------------");
+                    Console.WriteLine("Performed Services ");
+                    Console.WriteLine("-------------------------");
+                    PerformSchedule(appointments[i]);
+                    Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++");
                 }
             }
         }
@@ -250,8 +256,7 @@ namespace DentalConsoleApp
         {
             for (int i = 0; i < patientList.Count; i++)
             {
-                Console.WriteLine("[" + (i + 1) + "]");
-                Console.WriteLine(patientList[i].ToString());
+                Console.WriteLine("[" + (i + 1) + "]   " + patientList[i].ToString());
                 Console.WriteLine("+++++++++++++++++++++++++");
             }
         }
@@ -268,9 +273,11 @@ namespace DentalConsoleApp
 
         public DentalServicesEnum[] GetDentalServiceList()
         {
+            DentalServicesEnum[] services = EnumHelper.ToArray<DentalServicesEnum>();
+           
             List<DentalServicesEnum> dentalServices = new List<DentalServicesEnum>();
 
-            foreach (DentalServicesEnum service in Enum.GetValues(typeof(DentalServicesEnum)))
+            foreach (DentalServicesEnum service in services)
             {
                 if (service != DentalServicesEnum.NONE)
                     dentalServices.Add(service);
@@ -278,18 +285,20 @@ namespace DentalConsoleApp
             return dentalServices.ToArray();
         }
 
-        private string GetServiceDescription(DentalServicesEnum service)
-        { 
-            // TODO :: Extract method to resulability
-            var enumType = typeof(DentalServicesEnum);
-            var memberInfos = enumType.GetMember(service.ToString());
-            var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
-            var valueAttributes =
-                  enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            var description = ((DescriptionAttribute)valueAttributes[0]).Description;
-            return description;
+        //private string GetServiceDescription(DentalServicesEnum service)
+        //{ 
+        //    // TODO :: Extract method to resulability
+        //    //var enumType = typeof(DentalServicesEnum);
+        //    //var memberInfos = enumType.GetMember(service.ToString());
+        //    //var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+        //    //var valueAttributes =
+        //    //      enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        //    //var description = ((DescriptionAttribute)valueAttributes[0]).Description;
 
-        }
+        //    var description =  EnumHelper.GetAttributeDescription(service);
+        //    return description;
+
+        //}
     }
 
 }

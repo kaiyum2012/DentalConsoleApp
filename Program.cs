@@ -14,8 +14,8 @@ namespace DentalConsoleApp
         private delegate void SetupConsoleApp();
 
         private static SetupConsoleApp SetupTasks;
-        private static int patientCounter = 0;
-        static bool _debug = false;
+        //private static int patientCounter = 0;
+        static readonly bool _debug = false; // is only for Development purpose so, to distiguish starts with "_"
 
         /* 
          * TODO:: Create a menu with four options:
@@ -48,14 +48,11 @@ namespace DentalConsoleApp
         }
         static void Main(string[] args)
         {
-           
             int input = 0;
             MenuOptions option = 0;
            
-
-        DentalClinic clinic = new DentalClinic("ABC Dental Clinic");
+            DentalClinic clinic = new DentalClinic("ABC Dental Clinic");
             Console.WriteLine("Welcome to {0} Console App", clinic.ClinicName);
-            //Console.WriteLine("------------------------------------");
 
             //TODO:: Assign all init task to delegate
             SetupTasks += clinic.GeneratePatients;
@@ -63,18 +60,18 @@ namespace DentalConsoleApp
 
             do
             {
-                try
-                {
+                //try
+                //{
                     Menu();
 
                     input = GetIntInputFromConsole(_debug);
                     option = (MenuOptions) input;
 
-                }
-                catch (Exception e)
-                {
+                //}
+                //catch (Exception e)
+                //{
                    
-                }
+                //}
                 Console.Clear();
                 //Console.WriteLine(option.ToString());
                 switch (option)
@@ -85,18 +82,23 @@ namespace DentalConsoleApp
                         break;
                     case MenuOptions.CREATE_SCHEDULE:
                         clinic.ListPatients();
+                        Console.WriteLine("Enter 0 to Cancle\n\n");
                         Console.Write("Select Patient ---->");
 
                         var patient = GetPatientForAppointment(clinic);
                         var slot = GetAppointmentTimeSlot(clinic);
 
-                        if(patient != null && slot != TimeSlot.NONE)
+                        if(patient == null)
                         {
-                            clinic.Schedule(new Appointment(patient,slot));
+                            break;
                         }
-                        else
+                        else if(slot == TimeSlot.NONE)
                         {
                             Console.WriteLine("Sorry, we are full, Please book next day");
+                        }
+                        else if(patient != null && slot != TimeSlot.NONE)
+                        {
+                            clinic.Schedule(new Appointment(patient,slot));
                         }
 
                         break;
@@ -176,11 +178,15 @@ namespace DentalConsoleApp
 
         private static Person GetPatientForAppointment(DentalClinic clinic)
         {
+            
             try
             {
                 var input = GetIntInputFromConsole(_debug);
 
-                return clinic.GetPatient(input - 1);
+                if (input == 0)
+                    return null;
+
+                return clinic.GetPatient(input - 1); // offseting input to match with Array index
             }
             catch (Exception)
             {
@@ -190,15 +196,7 @@ namespace DentalConsoleApp
             }
         
         }
-        private static void ScheduleAppointments(DentalClinic clinic)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                //clinic.Schedule(new Appointment(patients[i]));
-            }
-            
-        }
-
+      
         private static int GetIntInputFromConsole(bool _Debug)
         {
             int input;

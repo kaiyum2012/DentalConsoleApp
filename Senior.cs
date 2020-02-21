@@ -7,10 +7,15 @@ namespace DentalConsoleApp
     class Senior : Person
     {
 
-        public Senior()
+        private Senior()
         {
 
         }
+        
+        /// <summary>
+        /// Senior is type of Person
+        /// </summary>
+        /// <param name="person"></param>
 
         public Senior(Person person)
         {

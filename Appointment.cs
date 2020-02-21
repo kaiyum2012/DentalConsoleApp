@@ -28,7 +28,7 @@ namespace DentalConsoleApp
         _03PM_TO_04PM_
     }
 
-    class Appointment //: IComparable<Appointment>
+    class Appointment
     {
         private TimeSlot appointmentTimeSlot;
 
@@ -36,7 +36,7 @@ namespace DentalConsoleApp
         public ProcessAppointmentDelegate ProcessAppointment;
 
         private DateTime appointmentDate;
-        private Person patient;
+        private readonly Person patient;
 
         public DateTime AppointmentDay
         {
@@ -65,7 +65,7 @@ namespace DentalConsoleApp
             }
         }
 
-        public Appointment(){ }
+        private Appointment(){ }
 
         /// <summary>
         /// 
@@ -80,23 +80,9 @@ namespace DentalConsoleApp
 
         public override string ToString()
         {
-            return "[ " + GetAppointmentTimeSlotStr() +" ]\n" 
+            return "[ " + GetAppointmentTimeSlotStr() +" ]  " 
                 + this.patient.ToString(); //+ "(" + this.patient.PatientNumber + ")";
         }
-
-        //public int CompareTo([AllowNull] Appointment other)
-        //{
-        //    if (other == null)
-        //        return 0;
-
-        //    if(this.patient.PatientNumber == other.patient.PatientNumber &&
-        //        this.AppointmentTimeSlot == other.AppointmentTimeSlot)
-        //    {
-        //        return 1;
-        //    }
-
-        //    return 0;
-        //}
 
         private string GetAppointmentTimeSlotStr()
         {

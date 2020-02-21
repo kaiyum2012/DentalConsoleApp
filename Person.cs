@@ -58,7 +58,7 @@ namespace DentalConsoleApp
         /// <param name="lastName"></param>
         /// <param name="gender"></param>
         /// <param name="birthDate"> Datetime Object (YYYY-MM-DD)</param>
-        /// <param name="patientNumber"> Phone Number (10 digits)</param>
+        /// <param name="patientNumber"> Patient Number (10 digits)</param>
         public Person(string firstName,string lastName,Gender gender,DateTime birthDate,string patientNumber)
         {
             FirstName = firstName;
@@ -68,16 +68,17 @@ namespace DentalConsoleApp
             PatientNumber = patientNumber;
 
         }
-        // TODO:: Replace AGE with computed property 
+
+        #region Override Methods
+        // DONE:: Replace AGE with computed property 
         public override string ToString()
         {
             return
-                FirstName + "," + LastName + " ("+ Age +" years) - " +
-                Gender + "\n" +
-                "Patient Number :" + PatientNumber + "\n" +
-                "Birthday (MM/DD/YYYY) :" + GetBirthDateShortString() ;
+                FirstName + "," + LastName + " ("+ Age +" years) - " + Gender + "\n" +
+                "Patient Number :" + PatientNumber + "   Birthday (MM/DD/YYYY) :" + GetBirthDateShortString() ;
         }
-
+       
+        #endregion
         public string GetBirthDateShortString()
         {
             return birthDate.ToShortDateString();

@@ -9,10 +9,14 @@ namespace DentalConsoleApp
     /// </summary>
     class Childern : Person 
     {
-        public Childern()
+        private Childern()
         {
 
         }
+        /// <summary>
+        /// Childern is type of Person
+        /// </summary>
+        /// <param name="person"></param>
         public Childern(Person person)
         {
             base.FirstName = person.FirstName;
