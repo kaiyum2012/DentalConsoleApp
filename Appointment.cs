@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+//using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace DentalConsoleApp
 {
     public enum TimeSlot{
-         NONE = 0,
+        [Description("NO SLOT")]
+        NONE = 0,
+         [Description("08 AM TO 09 AM")]
         _08AM_TO_09AM_ = 1,
+        [Description("09 AM TO 10 AM")]
         _09AM_TO_10AM_,
+        [Description("10 AM TO 11 AM")]
         _10AM_TO_11AM_,
+        [Description("11 AM TO 12 Noon")]
         _11AM_TO_12AM_,
+        [Description("12 Noon TO 01 PM")]
         _12AM_TO_01PM_,
+        [Description("01 PM TO 02 PM")]
         _01PM_TO_02PM_,
+        [Description("02 PM TO 03 PM")]
         _02PM_TO_03PM_,
+        [Description("03 PM TO 04 PM")]
         _03PM_TO_04PM_
     }
 
-    class Appointment : IComparable<Appointment>
+    class Appointment //: IComparable<Appointment>
     {
-        public TimeSlot AppointmentTimeSlot;
-      
+        private TimeSlot appointmentTimeSlot;
+
         public delegate void ProcessAppointmentDelegate();
         public ProcessAppointmentDelegate ProcessAppointment;
 
@@ -40,6 +51,20 @@ namespace DentalConsoleApp
         {
             get { return patient; }
         }
+
+        public TimeSlot AppointmentTimeSlot
+        {
+            get
+            {
+                return appointmentTimeSlot;
+            }
+
+            set
+            {
+                appointmentTimeSlot = value;
+            }
+        }
+
         public Appointment(){ }
 
         /// <summary>
@@ -50,27 +75,38 @@ namespace DentalConsoleApp
         public Appointment(Person person, TimeSlot slot)
         {
             patient = person;
-            AppointmentTimeSlot = slot; 
+            appointmentTimeSlot = slot; 
         }
 
         public override string ToString()
         {
-            return "[ " + this.AppointmentTimeSlot.ToString() +" ]\n" 
+            return "[ " + GetAppointmentTimeSlotStr() +" ]\n" 
                 + this.patient.ToString(); //+ "(" + this.patient.PatientNumber + ")";
         }
 
-        public int CompareTo([AllowNull] Appointment other)
+        //public int CompareTo([AllowNull] Appointment other)
+        //{
+        //    if (other == null)
+        //        return 0;
+
+        //    if(this.patient.PatientNumber == other.patient.PatientNumber &&
+        //        this.AppointmentTimeSlot == other.AppointmentTimeSlot)
+        //    {
+        //        return 1;
+        //    }
+
+        //    return 0;
+        //}
+
+        private string GetAppointmentTimeSlotStr()
         {
-            if (other == null)
-                return 0;
-
-            if(this.patient.PatientNumber == other.patient.PatientNumber &&
-                this.AppointmentTimeSlot == other.AppointmentTimeSlot)
-            {
-                return 1;
-            }
-
-            return 0;
+            var enumType = typeof(TimeSlot);
+            var memberInfos = enumType.GetMember(appointmentTimeSlot.ToString());
+            var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+            var valueAttributes =
+                  enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            var description = ((DescriptionAttribute)valueAttributes[0]).Description;
+            return description;
         }
     }
 }

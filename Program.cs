@@ -130,6 +130,8 @@ namespace DentalConsoleApp
         private static TimeSlot GetAppointmentTimeSlot(DentalClinic clinic)
         {
             TimeSlot timeSlot;
+
+            #region allow user to choose slot
             //int input;
 
             //do
@@ -158,6 +160,7 @@ namespace DentalConsoleApp
             //    }
 
             //} while (true);
+            #endregion
 
             if (clinic.GetAvailableTimeSlots().Length > 0)
             {

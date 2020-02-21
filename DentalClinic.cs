@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace DentalConsoleApp
@@ -10,7 +12,7 @@ namespace DentalConsoleApp
         private AppointmentList appointments;
         private PatientList patientList;
         public string ClinicName;
-        
+
         public DentalClinic()
         {
 
@@ -25,7 +27,7 @@ namespace DentalConsoleApp
 
         public void Schedule(Appointment appointment)
         {
-            if(IsSlotAvailable(appointment))
+            if (IsSlotAvailable(appointment))
             {
                 AskServicesAndAssign(appointment);
                 appointments.AddAppointment(appointment);
@@ -33,7 +35,7 @@ namespace DentalConsoleApp
             }
             else
             {
-                Console.WriteLine("Sorry {0} slot is already occupied, please choose different",appointment.AppointmentTimeSlot);
+                Console.WriteLine("Sorry {0} slot is already occupied, please choose different", appointment.AppointmentTimeSlot);
             }
         }
 
@@ -45,15 +47,22 @@ namespace DentalConsoleApp
 
             int input = 0;
 
-            do {
-                
+            do
+            {
                 Console.WriteLine("----------------------------");
                 Console.WriteLine("What service would you like");
                 Console.WriteLine("----------------------------");
 
                 for (int i = 0; i < services.Length; i++)
                 {
-                    Console.WriteLine("{0}. {1}", (i + 1), services[i]);
+
+                    var enumType = typeof(DentalServicesEnum);
+                    var memberInfos = enumType.GetMember(services[i].ToString());
+                    var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+                    var valueAttributes =
+                          enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                    var description = ((DescriptionAttribute)valueAttributes[0]).Description;
+                    Console.WriteLine("{0}. {1}", (i + 1), description);
                 }
 
                 Console.WriteLine("---------------------------");
@@ -71,12 +80,12 @@ namespace DentalConsoleApp
                             break;
                         case DentalServicesEnum.CLEARNING:
                             appointment.ProcessAppointment += appointment.Patient.Cleaning;
-                           
+
                             isAdded = true;
                             break;
                         case DentalServicesEnum.CAVITY_FILL:
                             appointment.ProcessAppointment += appointment.Patient.CavityFill;
-                            
+
                             isAdded = true;
 
                             break;
@@ -102,8 +111,8 @@ namespace DentalConsoleApp
                     if (isAdded)
                     {
                         isAdded = false;
-                        Console.WriteLine(service.ToString().ToUpper() +
-                        "  service added.");
+                        Console.WriteLine("\n\n" + GetServiceDescription(service) +
+                        "  service added. \n\n");
                     }
                 }
                 catch (Exception)
@@ -119,9 +128,9 @@ namespace DentalConsoleApp
         {
             foreach (var a in appointments.All())
             {
-               if( a.AppointmentTimeSlot == appointment.AppointmentTimeSlot)
+                if (a.AppointmentTimeSlot == appointment.AppointmentTimeSlot)
                 {
-                    return false;                 
+                    return false;
                 }
             }
             return true;
@@ -131,7 +140,7 @@ namespace DentalConsoleApp
         {
             foreach (var a in appointments.All())
             {
-                if (a.AppointmentTimeSlot == slot || 
+                if (a.AppointmentTimeSlot == slot ||
                     a.AppointmentTimeSlot == TimeSlot.NONE)
                 {
                     return false;
@@ -146,10 +155,10 @@ namespace DentalConsoleApp
 
             foreach (TimeSlot slot in Enum.GetValues(typeof(TimeSlot)))
             {
-                
+
                 if (CheckAvailability(slot))
                 {
-                    if(slot != TimeSlot.NONE)
+                    if (slot != TimeSlot.NONE)
                     {
                         availableTimeSlots.Add(slot);
                     }
@@ -160,12 +169,12 @@ namespace DentalConsoleApp
 
         private void BookAppointmentSlot(Appointment appointment)
         {
-           
+
         }
 
         public void DisplayAppointmemts()
         {
-            if(appointments.Count == 0)
+            if (appointments.Count == 0)
             {
                 Console.WriteLine("No Appointment so far, Please book an Appointment");
             }
@@ -173,10 +182,10 @@ namespace DentalConsoleApp
             {
                 for (int i = 0; i < appointments.Count; i++)
                 {
-                   Console.WriteLine(appointments[i].ToString());
+                    Console.WriteLine(appointments[i].ToString());
                 }
             }
-            
+
         }
 
         public void DisplayAppointment(Appointment appointment)
@@ -224,27 +233,24 @@ namespace DentalConsoleApp
         public void GeneratePatients()
         {
 
-            //var faker = new Faker("en");
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    Person patient = new Person(faker.Person.FirstName,faker.Person.LastName,faker.PickRandom<Gender>(),faker.Person.DateOfBirth,long.Parse(faker.Person.Phone));
-            //    patient.ToString();
-
-            //}
-
-            patientList.Add(new Childern(new Person("Abdulkaiyum", "shaikh", Gender.MALE, new DateTime(2005, 06, 13), "12346234")));
-            patientList.Add(new Adult(new Person("sunny", "patel", Gender.MALE, new DateTime(1992, 06, 13), "45555529")));
-            patientList.Add(new Senior(new Person("sree", "ba", Gender.FEMALE, new DateTime(1960, 06, 13), "51950061")));
-            patientList.Add(new Childern(new Person("khushbu", "soni", Gender.FEMALE, new DateTime(2010, 06, 13), "65306612")));
-            patientList.Add(new Childern(new Person("Aayushi", "mali", Gender.FEMALE, new DateTime(2012 , 06, 13), "15396126")));
+            patientList.Add(new Childern(new Person("Abdulkaiyum", "shaikh", Gender.MALE, new DateTime(2005, 06, 13), "3861958249")));
+            patientList.Add(new Adult(new Person("sunny", "patel", Gender.MALE, new DateTime(1992, 06, 13), "9356070775")));
+            patientList.Add(new Senior(new Person("sree", "ba", Gender.FEMALE, new DateTime(1960, 06, 13), "7515829410")));
+            patientList.Add(new Childern(new Person("khushbu", "soni", Gender.FEMALE, new DateTime(2010, 06, 13), "2392257448")));
+            patientList.Add(new Childern(new Person("Aayushi", "mali", Gender.FEMALE, new DateTime(2012, 06, 13), "9149773176")));
+            patientList.Add(new Adult(new Person("Mark", "Zukerburg", Gender.MALE, new DateTime(1990, 04, 12), "8511029729")));
+            patientList.Add(new Adult(new Person("Mark", "Zukerburg", Gender.MALE, new DateTime(1995, 01, 10), "8532189771")));
+            patientList.Add(new Senior(new Person("Steven", "Willson", Gender.MALE, new DateTime(1995, 01, 10), "4252733833")));
+            patientList.Add(new Childern(new Person("Alica", "Carter", Gender.FEMALE, new DateTime(2014, 09, 21), "3104188844")));
+            patientList.Add(new Adult(new Person("Tena", "Desuza", Gender.FEMALE, new DateTime(1989, 02, 08), "3104188844")));
 
         }
 
         public void ListPatients()
         {
             for (int i = 0; i < patientList.Count; i++)
-            {   
-                Console.WriteLine("[" + (i+1) + "]");
+            {
+                Console.WriteLine("[" + (i + 1) + "]");
                 Console.WriteLine(patientList[i].ToString());
                 Console.WriteLine("+++++++++++++++++++++++++");
             }
@@ -266,10 +272,24 @@ namespace DentalConsoleApp
 
             foreach (DentalServicesEnum service in Enum.GetValues(typeof(DentalServicesEnum)))
             {
-                if(service != DentalServicesEnum.NONE)
+                if (service != DentalServicesEnum.NONE)
                     dentalServices.Add(service);
             }
             return dentalServices.ToArray();
         }
+
+        private string GetServiceDescription(DentalServicesEnum service)
+        { 
+            // TODO :: Extract method to resulability
+            var enumType = typeof(DentalServicesEnum);
+            var memberInfos = enumType.GetMember(service.ToString());
+            var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+            var valueAttributes =
+                  enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            var description = ((DescriptionAttribute)valueAttributes[0]).Description;
+            return description;
+
+        }
     }
+
 }
